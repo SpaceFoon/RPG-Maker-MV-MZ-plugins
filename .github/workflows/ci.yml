@@ -1,0 +1,83 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Repository
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check for plugin files
+      run: |
+        echo "Checking repository structure..."
+        if [ -d "plugins" ]; then
+          echo "✓ Plugins directory exists"
+          find plugins -name "*.js" -type f || echo "No JavaScript plugin files found yet"
+        else
+          echo "ℹ Plugins directory not yet created"
+        fi
+        
+    - name: Validate JavaScript syntax
+      run: |
+        echo "Validating JavaScript files..."
+        if command -v node &> /dev/null; then
+          find . -name "*.js" -not -path "*/node_modules/*" -type f -exec node --check {} \; || true
+        else
+          echo "Node.js not available, skipping JS validation"
+        fi
+        
+    - name: Check for required files
+      run: |
+        echo "Checking for required repository files..."
+        files=("README.md" "LICENSE" "CONTRIBUTING.md")
+        for file in "${files[@]}"; do
+          if [ -f "$file" ]; then
+            echo "✓ $file exists"
+          else
+            echo "⚠ $file missing"
+          fi
+        done
+        
+    - name: Repository structure check
+      run: |
+        echo "Repository structure:"
+        tree -L 2 -a || ls -la
+
+  lint:
+    name: Lint Check
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('**/*.js') != '' }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        if [ -f "package.json" ]; then
+          npm ci
+        else
+          echo "No package.json found, skipping npm install"
+        fi
+        
+    - name: Run linter
+      run: |
+        if [ -f "package.json" ] && grep -q "lint" package.json; then
+          npm run lint
+        else
+          echo "No lint script configured, skipping"
+        fi

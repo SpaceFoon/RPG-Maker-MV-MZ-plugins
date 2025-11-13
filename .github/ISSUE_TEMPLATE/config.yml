@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/SpaceFoon/RPG-Maker-MV-MZ-plugins/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📖 Documentation
+    url: https://github.com/SpaceFoon/RPG-Maker-MV-MZ-plugins#readme
+    about: Check out the documentation and guides
