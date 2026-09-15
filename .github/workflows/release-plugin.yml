@@ -1,0 +1,257 @@
+name: Release Plugin (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      plugin_slug:
+        description: Catalog slug in fugs-plugins (e.g. fugs-chat-bubbles)
+        required: true
+        type: string
+      plugin_name:
+        description: Human display name
+        required: true
+        type: string
+      short_name:
+        description: Zip / file basename without version (e.g. FugsChatBubbles)
+        required: true
+        type: string
+      version:
+        description: Semver without leading v (e.g. 1.0.0)
+        required: true
+        type: string
+      tag_name:
+        description: Git tag including leading v (e.g. v1.0.0)
+        required: true
+        type: string
+      files:
+        description: Newline-separated paths relative to repo root to include in the zip
+        required: true
+        type: string
+      install_notes:
+        description: Extra plain-text lines appended to INSTALL.txt
+        required: false
+        type: string
+        default: ""
+      site_repo:
+        description: Catalog site repository (owner/name)
+        required: false
+        type: string
+        default: SpaceFoon/fugs-plugins
+    secrets:
+      FUGS_SITE_SYNC_TOKEN:
+        description: PAT with contents+PR write on the site repo
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Zip, release, sync catalog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout plugin repo
+        uses: actions/checkout@v4
+
+      - name: Stage release files
+        id: stage
+        env:
+          FILES: ${{ inputs.files }}
+          SHORT_NAME: ${{ inputs.short_name }}
+          VERSION: ${{ inputs.version }}
+          PLUGIN_NAME: ${{ inputs.plugin_name }}
+          INSTALL_NOTES: ${{ inputs.install_notes }}
+          TAG_NAME: ${{ inputs.tag_name }}
+        run: |
+          set -euo pipefail
+          STAGE="release-staging/${SHORT_NAME}"
+          mkdir -p "$STAGE"
+
+          while IFS= read -r path; do
+            path="$(echo "$path" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+            [ -z "$path" ] && continue
+            if [ ! -e "$path" ]; then
+              echo "::error::Missing file: $path"
+              exit 1
+            fi
+            mkdir -p "$STAGE/$(dirname "$path")"
+            cp -a "$path" "$STAGE/$path"
+          done <<< "$FILES"
+
+          {
+            echo "${PLUGIN_NAME}"
+            echo "Version ${VERSION}"
+            echo "Repository: https://github.com/${GITHUB_REPOSITORY}"
+            echo "Release tag: ${TAG_NAME}"
+            echo ""
+            echo "======== INSTALL ========"
+            echo ""
+            echo "1. Unzip this archive."
+            echo "2. Copy the .js plugin file(s) into your RPG Maker project's js/plugins/ folder."
+            echo "3. Open Plugin Manager, add the plugin(s), and turn them ON."
+            echo "4. Configure parameters as needed, then save your project."
+            echo ""
+            if [ -n "${INSTALL_NOTES}" ]; then
+              echo "======== NOTES ========"
+              echo ""
+              printf '%s\n' "${INSTALL_NOTES}"
+              echo ""
+            fi
+            if [ -f README.md ]; then
+              echo "======== README ========"
+              echo ""
+              sed -E \
+                -e 's/^#{1,6}[[:space:]]*//' \
+                -e 's/\*\*([^*]+)\*\*/\1/g' \
+                -e 's/\*([^*]+)\*/\1/g' \
+                -e 's/`([^`]+)`/\1/g' \
+                -e 's/\[([^]]+)\]\(([^)]+)\)/\1 (\2)/g' \
+                README.md
+              echo ""
+            fi
+            if [ -f LICENSE ]; then
+              echo "======== LICENSE ========"
+              echo ""
+              cat LICENSE
+              echo ""
+            fi
+          } > "$STAGE/INSTALL.txt"
+
+          ZIP_NAME="${SHORT_NAME}-v${VERSION}.zip"
+          mkdir -p release-dist
+          (cd release-staging && zip -r "../release-dist/${ZIP_NAME}" "${SHORT_NAME}")
+          echo "zip_name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
+          echo "zip_path=release-dist/${ZIP_NAME}" >> "$GITHUB_OUTPUT"
+          ls -la release-dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag_name }}
+          name: ${{ inputs.plugin_name }} ${{ inputs.tag_name }}
+          body: |
+            ${{ inputs.plugin_name }} **${{ inputs.tag_name }}**
+
+            Download the zip for a ready-to-install pack (plugin files + INSTALL.txt).
+
+            Catalog slug: `${{ inputs.plugin_slug }}`
+          files: ${{ steps.stage.outputs.zip_path }}
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sync catalog site PR
+        env:
+          GH_TOKEN: ${{ secrets.FUGS_SITE_SYNC_TOKEN }}
+          SITE_REPO: ${{ inputs.site_repo }}
+          PLUGIN_SLUG: ${{ inputs.plugin_slug }}
+          VERSION: ${{ inputs.version }}
+          ZIP_NAME: ${{ steps.stage.outputs.zip_name }}
+          SHORT_NAME: ${{ inputs.short_name }}
+          TAG_NAME: ${{ inputs.tag_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          export RELEASE_ZIP_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG_NAME}/${ZIP_NAME}"
+          export UPDATED_AT="$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"
+          BRANCH="plugin-release/${PLUGIN_SLUG}-${TAG_NAME}"
+          WORK="/tmp/fugs-plugins-sync"
+          rm -rf "$WORK"
+          git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${SITE_REPO}.git" "$WORK"
+          cd "$WORK"
+          git config user.name "fugs-plugin-release[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+
+          node <<'NODE'
+          const fs = require("fs");
+          const slug = process.env.PLUGIN_SLUG;
+          const version = process.env.VERSION;
+          const updatedAt = process.env.UPDATED_AT;
+          const releaseZipUrl = process.env.RELEASE_ZIP_URL;
+          const short = process.env.SHORT_NAME;
+
+          function replaceObjectField(block, field, value) {
+            const re = new RegExp(field + ":\\s*\"[^\"]*\"");
+            if (!re.test(block)) {
+              throw new Error(field + " field missing in plugin entry");
+            }
+            return block.replace(re, field + ': "' + value + '"');
+          }
+
+          function findObjectBounds(src, needle) {
+            const idx = src.indexOf(needle);
+            if (idx === -1) return null;
+            const brace = src.lastIndexOf("{", idx);
+            let depth = 0;
+            for (let i = brace; i < src.length; i++) {
+              if (src[i] === "{") depth++;
+              else if (src[i] === "}") {
+                depth--;
+                if (depth === 0) return { start: brace, end: i + 1 };
+              }
+            }
+            return null;
+          }
+
+          function patchPluginsTs(src) {
+            const bounds = findObjectBounds(src, 'slug: "' + slug + '"');
+            if (!bounds) throw new Error("slug not found in plugins.ts: " + slug);
+            let block = src.slice(bounds.start, bounds.end);
+            block = replaceObjectField(block, "version", version);
+            block = replaceObjectField(block, "updatedAt", updatedAt);
+            if (/releaseZipUrl:\s*"/.test(block)) {
+              block = replaceObjectField(block, "releaseZipUrl", releaseZipUrl);
+            } else {
+              const inserted = block.replace(
+                /(downloadUrl:\s*(?:\n\s*)?(?:"[^"]*"|`[^`]*`),)/,
+                '$1\n    releaseZipUrl: "' + releaseZipUrl + '",'
+              );
+              if (inserted === block) throw new Error("failed to insert releaseZipUrl");
+              block = inserted;
+            }
+            return src.slice(0, bounds.start) + block + src.slice(bounds.end);
+          }
+
+          function patchSeed(src) {
+            const bounds = findObjectBounds(src, short);
+            if (!bounds) return src;
+            let block = src.slice(bounds.start, bounds.end);
+            if (/version:\s*"/.test(block)) {
+              block = replaceObjectField(block, "version", version);
+            }
+            return src.slice(0, bounds.start) + block + src.slice(bounds.end);
+          }
+
+          const pluginsPath = "artifacts/rpg-plugins/src/data/plugins.ts";
+          const seedPath = "scripts/src/seed-plugins.ts";
+          fs.writeFileSync(pluginsPath, patchPluginsTs(fs.readFileSync(pluginsPath, "utf8")));
+          if (fs.existsSync(seedPath)) {
+            fs.writeFileSync(seedPath, patchSeed(fs.readFileSync(seedPath, "utf8")));
+          }
+          console.log("Patched catalog for " + slug + " -> " + version);
+          console.log("releaseZipUrl=" + releaseZipUrl);
+          NODE
+
+          git add artifacts/rpg-plugins/src/data/plugins.ts scripts/src/seed-plugins.ts || true
+          if git diff --staged --quiet; then
+            echo "No catalog changes needed."
+            exit 0
+          fi
+          git commit -m "chore(catalog): sync ${PLUGIN_SLUG} ${TAG_NAME}"
+          git push -u origin "$BRANCH" --force
+          EXISTING="$(gh pr list --repo "$SITE_REPO" --head "$BRANCH" --json number --jq '.[0].number // empty')"
+          if [ -n "$EXISTING" ]; then
+            echo "PR already open: #${EXISTING}"
+          else
+            gh pr create --repo "$SITE_REPO" \
+              --title "chore(catalog): ${PLUGIN_SLUG} ${TAG_NAME}" \
+              --body "$(printf '%s\n' \
+                '## Summary' \
+                "- Sync catalog metadata for \`${PLUGIN_SLUG}\` to **${TAG_NAME}**" \
+                '- Set `releaseZipUrl` to the new GitHub Release zip' \
+                '' \
+                "Zip: ${RELEASE_ZIP_URL}" \
+                '' \
+                'Automated by plugin release CI.')"
+          fi

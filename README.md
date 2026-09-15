@@ -107,6 +107,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 All plugins in this repository are automatically validated through our CI/CD pipeline to ensure quality and compatibility.
 
+### Plugin release + catalog sync
+
+Reusable release workflow: [`.github/workflows/release-plugin.yml`](.github/workflows/release-plugin.yml)
+
+Each plugin repo tags `v*` (or runs **Release** manually). That builds a zip with `INSTALL.txt`, publishes a GitHub Release, and opens a PR on [fugs-plugins](https://github.com/SpaceFoon/fugs-plugins) to bump catalog `version` / `updatedAt` / `releaseZipUrl`.
+
+Full setup (secret `FUGS_SITE_SYNC_TOKEN`, caller template): **[docs/RELEASE-CI.md](docs/RELEASE-CI.md)**.
+
 ---
 
 Made with ❤️ for the RPG Maker community 
