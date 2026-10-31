@@ -87,7 +87,7 @@ jobs:
       FUGS_SITE_SYNC_TOKEN: ${{ secrets.FUGS_SITE_SYNC_TOKEN }}
 ```
 
-The `category` and `compatibility` inputs are optional. Set compatibility explicitly when a release changes supported RPG Maker versions. Existing catalog maturity, description, features, and other reviewed fields are preserved. A new slug is inserted with maturity `unreviewed`, so a release never implies production readiness.
+The `category` and `compatibility` inputs are optional. Set compatibility explicitly when a release changes supported RPG Maker versions. On every release, the directory refreshes version, tag-pinned file URLs and hashes, description, license, and updated time from that release. It preserves reviewed maturity, category, features, installation notes, and other curated fields. A new slug is inserted with maturity `unreviewed`, so a release never implies production readiness.
 
 ## How to cut a release
 
