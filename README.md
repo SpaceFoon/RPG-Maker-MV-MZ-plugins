@@ -105,16 +105,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔧 CI/CD Status
 
-All plugins in this repository are automatically validated through our CI/CD pipeline to ensure quality and compatibility.
+Legacy repository workflows are separate from release publishing. Fugs Chat Bubbles builds releases and updates the shared directory on the owner's PC.
 
-### Plugin release + catalog sync
+## Shared plugin directory and website deployment
 
-Reusable release workflow: [`.github/workflows/release-plugin.yml`](.github/workflows/release-plugin.yml)
+This repository is the shared plugin directory. `plugins.json` (schema version 1) stores reviewed plugin metadata, release tags, ZIP links, and tagged JavaScript files with SHA-256 checksums. The generated table below reflects that manifest.
 
-Each plugin repo tags `v*` (or runs **Release** manually). That builds a zip with `INSTALL.txt`, publishes a GitHub Release, and opens a PR on [fugs-plugins](https://github.com/SpaceFoon/fugs-plugins) to bump catalog `version` / `updatedAt` / `releaseZipUrl`.
+Fugs Chat Bubbles updates this JSON and table directly from its Windows release watcher. The updater runs locally and pushes a normal Git commit with `[skip ci]`; it does not dispatch a GitHub Actions job or open a website PR. Existing maturity and presentation metadata are preserved. A failed push is retried by the watcher.
 
-Full setup (secret `FUGS_SITE_SYNC_TOKEN`, caller template): **[docs/RELEASE-CI.md](docs/RELEASE-CI.md)**.
+The production website at https://fugsplugins.com is deployed by `SpaceFoon/sitebase`, whose `scripts/deploy-sites.sh` uses `SpaceFoon/fugs-plugins` branch `master`, build directory `artifacts/rpg-plugins/dist/public`. The `/FugsAudioEx` subpath comes from `SpaceFoon/fugg-audio-plugin-site` branch `master`. This directory repository does not deploy the website.
 
----
+The website integration that reads this manifest in the browser is pending separately. Publishing directory metadata alone does not prove the deployed website consumes it. The verified public website build on 2026-10-31 was `a8977af`. Only the owner performs production Sitebase deployments.
 
-Made with ❤️ for the RPG Maker community 
+<!-- plugin-directory:start -->
+| Plugin | Version | RPG Maker | Maturity |
+| --- | --- | --- | --- |
+| [Fugs MultiTrack Audio EX](https://github.com/SpaceFoon/FugsMultiTrackAudioEX) | 2.3.0 | MZ/MV | not-prod-ready |
+| [Fugs Master Volume](https://github.com/SpaceFoon/FugMasterVolume) | 1.0.0 | MZ/MV | prod-ready |
+| [Fugs Only OGG MV](https://github.com/SpaceFoon/FugsOnlyOggMV) | 1.0.0 | MV | prod-ready |
+| [Fugs OGG Opus Loop Tags](https://github.com/SpaceFoon/FugsOpusMVMZ) | 1.0.0 | MZ/MV | prod-ready |
+| [Fugs YEP/Galv SpriteOffset Fix](https://github.com/SpaceFoon/FugsYEP-GalvSpriteOffsetFix) | 1.0.0 | MV | prod-ready |
+| [Fugs Chat Bubbles](https://github.com/SpaceFoon/FugsChatBubbles) | 1.0.2 | MV | not-prod-ready |
+<!-- plugin-directory:end -->
