@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       plugin_slug:
-        description: Catalog slug in fugs-plugins (e.g. fugs-chat-bubbles)
+        description: Stable plugin slug in the shared directory (e.g. fugs-chat-bubbles)
         required: true
         type: string
       plugin_name:
