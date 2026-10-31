@@ -1,0 +1,312 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-31T15:04:14.000Z",
+  "plugins": [
+    {
+      "slug": "fugs-multi-track-audio-ex",
+      "name": "Fugs MultiTrack Audio EX",
+      "shortName": "FugsMultiTrackAudioEX",
+      "description": "Unlimited independent BGM, BGS, ME, and SE tracks for RPG Maker MV and MZ, with fades, stem mixing, WebAudio effects, spatial audio, ducking, switch-gated commands, and SFX aliases. Core plus optional satellites.",
+      "version": "2.3.0",
+      "category": "Audio",
+      "compatibility": "MZ/MV",
+      "tags": [
+        "audio",
+        "mixing",
+        "crossfade",
+        "bgm",
+        "bgs",
+        "effects",
+        "spatial",
+        "stems"
+      ],
+      "repositoryUrl": "https://github.com/SpaceFoon/FugsMultiTrackAudioEX",
+      "downloadUrl": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsMultiTrackAudioEX.js",
+      "releaseZipUrl": "https://github.com/SpaceFoon/FugsMultiTrackAudioEX/releases/download/v2.3.0/FugsMultiTrackAudioEX-v2.3.0.zip",
+      "documentationUrl": "https://github.com/SpaceFoon/FugsMultiTrackAudioEX/blob/main/FugsAudio0Docs.js",
+      "license": "GPL-3.0",
+      "updatedAt": "2026-10-04T22:20:14.000Z",
+      "isNew": false,
+      "isFeatured": true,
+      "screenshotUrl": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/main/9918d6e8-cd82-4836-b726-31266b4a8901.webp",
+      "extraDownloads": [
+        {
+          "label": "Docs plugin",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/main/FugsAudio0Docs.js"
+        },
+        {
+          "label": "All-in-one bundle",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/main/dist/FugsMultiTrackAudioEX.bundle.js"
+        }
+      ],
+      "features": [
+        "Unlimited BGM / BGS / ME / SE tracks that run alongside RPG Maker MV's stock audio",
+        "Per-track volume, pan, pitch, fades, crossfades, pause/resume, and command chains",
+        "Synchronized stem mixing (syncplay) for layered intensity without restarting music",
+        "Optional WebAudio effect chains and named presets (cave, radio, combat, weather, and more)",
+        "Optional proximity / doppler spatial audio and pan sweeps",
+        "Optional ducking, sidechain compression, and tempo-synced pump",
+        "Optional switch-gated commands and SFX alias pools with humanizer jitter",
+        "Save/load snapshots, scene persistence, and a FugsAudio script API",
+        "In-editor playbook lives in FugsAudio0Docs.js — enable it in Plugin Manager"
+      ],
+      "installation": [
+        "Download Core (FugsMultiTrackAudioEX.js) plus the satellites you need. FugsAudio0Docs.js is recommended so Plugin Manager shows the full playbook.",
+        "Copy the files into your project's js/plugins folder.",
+        "In Plugin Manager, enable Core first, then Docs, then optional satellites top to bottom. Put FugsAudio7Compat after OcRam if you use it. Keep FugsAudio8Test off in shipped builds.",
+        "Do not enable the all-in-one bundle and satellites 2–7 at the same time.",
+        "Use Event → Plugin Command (play-bgm1 ThemeA 90 2) or the FugsAudio script API."
+      ],
+      "playbook": null,
+      "repository": "SpaceFoon/FugsMultiTrackAudioEX",
+      "maturity": "not-prod-ready",
+      "releaseTag": "v2.3.0",
+      "files": [
+        {
+          "name": "FugsMultiTrackAudioEX.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsMultiTrackAudioEX.js"
+        },
+        {
+          "name": "FugsAudio0Docs.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio0Docs.js"
+        },
+        {
+          "name": "FugsAudio2Effects.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio2Effects.js"
+        },
+        {
+          "name": "FugsAudio3Spatial.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio3Spatial.js"
+        },
+        {
+          "name": "FugsAudio4Dynamics.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio4Dynamics.js"
+        },
+        {
+          "name": "FugsAudio5Switch.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio5Switch.js"
+        },
+        {
+          "name": "FugsAudio6Aliases.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio6Aliases.js"
+        },
+        {
+          "name": "FugsAudio7Compat.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio7Compat.js"
+        }
+      ]
+    },
+    {
+      "slug": "fugs-master-volume",
+      "name": "Fugs Master Volume",
+      "shortName": "FugsMasterVolume",
+      "description": "Set a sensible starting volume for your game and give players one master control for all audio, with optional control over RPG Maker's stock volume sliders.",
+      "version": "1.0.0",
+      "category": "Audio",
+      "compatibility": "MZ/MV",
+      "tags": [
+        "audio",
+        "volume",
+        "options",
+        "accessibility"
+      ],
+      "repositoryUrl": "https://github.com/SpaceFoon/FugMasterVolume",
+      "downloadUrl": "https://raw.githubusercontent.com/SpaceFoon/FugMasterVolume/main/FugsMasterVolume.js",
+      "documentationUrl": "https://github.com/SpaceFoon/FugMasterVolume#readme",
+      "license": "GPL-3.0",
+      "updatedAt": "2026-10-24T00:00:00.000Z",
+      "isNew": false,
+      "isFeatured": true,
+      "features": [
+        "Apply a developer-defined default volume when the game first starts",
+        "Add a saved master-volume control to the Options menu",
+        "Optionally hide the stock BGM, BGS, SE, and ME sliders",
+        "Customize slider labels and keyboard or mouse step sizes",
+        "Test volume settings with included console helpers"
+      ],
+      "installation": [
+        "Download FugsMasterVolume.js.",
+        "Place it in your project's js/plugins folder.",
+        "Add FugsMasterVolume in the Plugin Manager and turn it on.",
+        "Set the developer and player volume options to suit your game."
+      ],
+      "repository": "SpaceFoon/FugMasterVolume",
+      "maturity": "prod-ready",
+      "files": [
+        {
+          "name": "FugsMasterVolume.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugMasterVolume/main/FugsMasterVolume.js"
+        }
+      ]
+    },
+    {
+      "slug": "fugs-only-ogg-mv",
+      "name": "Fugs Only OGG MV",
+      "shortName": "FugsOnlyOggMV",
+      "description": "Make RPG Maker MV use OGG audio in every deployment instead of exporting a second M4A copy for mobile, Mac, and web builds.",
+      "version": "1.0.0",
+      "category": "Audio",
+      "compatibility": "MV",
+      "tags": [
+        "audio",
+        "ogg",
+        "deployment",
+        "file-size"
+      ],
+      "repositoryUrl": "https://github.com/SpaceFoon/FugsOnlyOggMV",
+      "downloadUrl": "https://raw.githubusercontent.com/SpaceFoon/FugsOnlyOggMV/main/FugsOnlyOggMV.js",
+      "documentationUrl": "https://github.com/SpaceFoon/FugsOnlyOggMV#readme",
+      "license": "MIT",
+      "updatedAt": "2026-10-24T00:00:00.000Z",
+      "isNew": false,
+      "isFeatured": false,
+      "features": [
+        "Resolve audio files with the .ogg extension in RPG Maker MV",
+        "Avoid maintaining duplicate OGG and M4A audio libraries",
+        "Use without settings or runtime configuration",
+        "Keep deployment behavior in one tiny, focused plugin"
+      ],
+      "installation": [
+        "Download FugsOnlyOggMV.js.",
+        "Place it in your project's js/plugins folder.",
+        "Add FugsOnlyOggMV in RPG Maker MV's Plugin Manager and turn it on.",
+        "Deploy with your OGG audio files; no plugin settings are required."
+      ],
+      "repository": "SpaceFoon/FugsOnlyOggMV",
+      "maturity": "prod-ready",
+      "files": [
+        {
+          "name": "FugsOnlyOggMV.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsOnlyOggMV/main/FugsOnlyOggMV.js"
+        }
+      ]
+    },
+    {
+      "slug": "fugs-opus-loop-tags",
+      "name": "Fugs OGG Opus Loop Tags",
+      "shortName": "FugsOpusMV-MZ",
+      "description": "Makes RMMV/MZ read and use loop tags from OGG files with the Opus codec.",
+      "version": "1.0.0",
+      "category": "Audio",
+      "compatibility": "MZ/MV",
+      "tags": [
+        "audio",
+        "ogg",
+        "opus",
+        "loop"
+      ],
+      "repositoryUrl": "https://github.com/SpaceFoon/FugsOpusMVMZ",
+      "downloadUrl": "https://raw.githubusercontent.com/SpaceFoon/FugsOpusMVMZ/main/FugsOpusMV-MZ.js",
+      "documentationUrl": "https://github.com/SpaceFoon/FugsOpusMVMZ#readme",
+      "license": "MIT",
+      "updatedAt": "2026-10-24T00:00:00.000Z",
+      "isNew": false,
+      "isFeatured": false,
+      "features": [
+        "Read loop metadata from Opus-encoded OGG files",
+        "Works with RPG Maker MV and MZ audio playback",
+        "No extra audio tools required once loop tags are in the file"
+      ],
+      "installation": [
+        "Download FugsOpusMVMZ.js.",
+        "Place it in your project's js/plugins folder.",
+        "Enable it in the Plugin Manager.",
+        "Use OGG/Opus files with loop tags in your audio folders."
+      ],
+      "repository": "SpaceFoon/FugsOpusMVMZ",
+      "maturity": "prod-ready",
+      "files": [
+        {
+          "name": "FugsOpusMV-MZ.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsOpusMVMZ/main/FugsOpusMV-MZ.js"
+        }
+      ]
+    },
+    {
+      "slug": "fugs-yep-galv-sprite-offset-fix",
+      "name": "Fugs YEP/Galv SpriteOffset Fix",
+      "shortName": "FugsYEP-GALV-SpriteOffsetFix",
+      "description": "Fixes SpriteOffsetX errors when using Yanfly Sprite Offset with Galv Camera Control.",
+      "version": "1.0.0",
+      "category": "Compatibility",
+      "compatibility": "MV",
+      "tags": [
+        "compatibility",
+        "yanfly",
+        "galv",
+        "sprites"
+      ],
+      "repositoryUrl": "https://github.com/SpaceFoon/FugsYEP-GalvSpriteOffsetFix",
+      "downloadUrl": "https://raw.githubusercontent.com/SpaceFoon/FugsYEP-GalvSpriteOffsetFix/main/FugsYEP-GALV-SpriteOffsetFix.js",
+      "documentationUrl": "https://github.com/SpaceFoon/FugsYEP-GalvSpriteOffsetFix#readme",
+      "license": "MIT",
+      "updatedAt": "2026-10-24T00:00:00.000Z",
+      "isNew": false,
+      "isFeatured": false,
+      "features": [
+        "Resolves SpriteOffsetX conflicts between YEP and Galv plugins",
+        "Drop-in fix for common MV plugin stacks"
+      ],
+      "installation": [
+        "Download the plugin .js file.",
+        "Place it in js/plugins.",
+        "Enable it in the Plugin Manager (order may matter relative to YEP/Galv)."
+      ],
+      "repository": "SpaceFoon/FugsYEP-GalvSpriteOffsetFix",
+      "maturity": "prod-ready",
+      "files": [
+        {
+          "name": "FugsYEP-GALV-SpriteOffsetFix.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsYEP-GalvSpriteOffsetFix/main/FugsYEP-GALV-SpriteOffsetFix.js"
+        }
+      ]
+    },
+    {
+      "slug": "fugs-chat-bubbles",
+      "name": "Fugs Chat Bubbles",
+      "shortName": "FugsChatBubbles",
+      "description": "Customizable animated speech bubbles that follow events and stack — Pixi-only parallel chat, themes, gradients, and FF7-style look for RPG Maker MV.",
+      "version": "1.0.2",
+      "category": "Visual & UI",
+      "compatibility": "MV",
+      "tags": [
+        "ui",
+        "chat",
+        "bubbles",
+        "pixi",
+        "dialogue"
+      ],
+      "repositoryUrl": "https://github.com/SpaceFoon/FugsChatBubbles",
+      "downloadUrl": "https://raw.githubusercontent.com/SpaceFoon/FugsChatBubbles/v1.0.2/FugsChatBubbles.js",
+      "documentationUrl": "https://github.com/SpaceFoon/FugsChatBubbles#readme",
+      "license": "GPL-3.0",
+      "updatedAt": "2026-10-31T15:04:14.000Z",
+      "isNew": false,
+      "isFeatured": false,
+      "features": [
+        "Parallel chat bubbles using Pixi only",
+        "Bubble stacking for multiple messages",
+        "Bounce-in and fade-out animations",
+        "Built-in themes plus custom gradient text and backgrounds",
+        "Bubbles can follow events, the player, or followers",
+        "Works with MBS Maps zoom (and similar camera plugins)"
+      ],
+      "installation": [
+        "Download FugsChatBubbles.js (or the release zip when available).",
+        "Place it in your project's js/plugins folder.",
+        "Enable FugsChatBubbles in Plugin Manager and pick a theme.",
+        "Use ShowChatBubble [event][duration][message] from events."
+      ],
+      "repository": "SpaceFoon/FugsChatBubbles",
+      "maturity": "not-prod-ready",
+      "files": [
+        {
+          "name": "FugsChatBubbles.js",
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsChatBubbles/v1.0.2/FugsChatBubbles.js"
+        }
+      ],
+      "releaseTag": "v1.0.2",
+      "releaseZipUrl": "https://github.com/SpaceFoon/FugsChatBubbles/releases/download/v1.0.2/FugsChatBubbles-v1.0.2.zip"
+    }
+  ]
+}
