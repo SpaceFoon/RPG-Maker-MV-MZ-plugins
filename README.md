@@ -85,7 +85,7 @@ All plugins in this repository are automatically validated through our CI/CD pip
 
 Reusable release workflow: [`.github/workflows/release-plugin.yml`](.github/workflows/release-plugin.yml)
 
-Each plugin release publishes a zip with `INSTALL.txt` and sends a release event to this repository. The directory workflow updates `plugins.json` on the default branch and refreshes the table above; the website reads that JSON live.
+Release automation publishes ZIPs and updates this shared directory. Reusable workflow callers send a release event that refreshes `plugins.json` and the table above; Chat Bubbles’ Windows watcher updates the same files directly. The website reads that JSON live.
 
 Full setup (secret `FUGS_SITE_SYNC_TOKEN`, caller template): **[docs/RELEASE-CI.md](docs/RELEASE-CI.md)**.
 
