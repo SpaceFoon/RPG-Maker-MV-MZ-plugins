@@ -147,7 +147,11 @@ if (previous) {
   }
 }
 const firstSource = releaseFiles.find((file) => file.sourceText)?.sourceText ?? "";
-const inferred = compatibility(payload.compatibility);
+const explicitCompatibility = compatibility(payload.compatibility);
+const releaseCompatibility =
+  explicitCompatibility ||
+  compatibility(payload.inferredCompatibility) ||
+  inferCompatibility(firstSource);
 const maturityValues = ["prod-ready", "not-prod-ready", "unreviewed"];
 const maturity = previous?.maturity && maturityValues.includes(previous.maturity)
   ? previous.maturity
@@ -160,7 +164,7 @@ const plugin = previous ?? {
   description: payload.description || inferDescription(firstSource) || name,
   version,
   category: payload.category || "Other",
-  compatibility: inferred || compatibility(payload.inferredCompatibility) || inferCompatibility(firstSource),
+  compatibility: releaseCompatibility,
   tags: Array.isArray(payload.tags) ? payload.tags : [],
   repository,
   repositoryUrl,
@@ -199,11 +203,10 @@ plugin.updatedAt = updatedAt;
 plugin.files = releaseFiles.map(({ name: fileName, url, sha256 }) => ({ name: fileName, url, sha256 }));
 if (releaseDescription) plugin.description = releaseDescription;
 if (releaseLicense) plugin.license = releaseLicense;
-if (previous && inferred && payload.compatibilityConfirmed === true) {
-  plugin.compatibility = inferred;
-}
-if (!previous && !plugin.compatibility) {
-  plugin.compatibility = compatibility(payload.inferredCompatibility) || inferCompatibility(firstSource);
+if (releaseCompatibility !== "Unknown") {
+  plugin.compatibility = releaseCompatibility;
+} else if (!plugin.compatibility) {
+  plugin.compatibility = "Unknown";
 }
 if (!previous && !plugin.description) {
   plugin.description = inferDescription(firstSource) || name;
