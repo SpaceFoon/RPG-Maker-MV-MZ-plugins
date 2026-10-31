@@ -13,7 +13,7 @@ function requiredString(name, value) {
 }
 
 function parseVersion(value) {
-  const match = String(value).match(/^(\\d+)\\.(\\d+)\\.(\\d+)(?:-([0-9A-Za-z.-]+))?$/);
+  const match = String(value).match(/^(\d+)\\.(\d+)\\.(\d+)(?:-([0-9A-Za-z.-]+))?$/);
   if (!match) return null;
   return {
     parts: [Number(match[1]), Number(match[2]), Number(match[3])],
@@ -37,8 +37,8 @@ function compareVersions(left, right) {
     if (leftParts[index] === undefined) return -1;
     if (rightParts[index] === undefined) return 1;
     if (leftParts[index] === rightParts[index]) continue;
-    const leftNumber = /^\\d+$/.test(leftParts[index]);
-    const rightNumber = /^\\d+$/.test(rightParts[index]);
+    const leftNumber = /^\d+$/.test(leftParts[index]);
+    const rightNumber = /^\d+$/.test(rightParts[index]);
     if (leftNumber && rightNumber) return Number(leftParts[index]) > Number(rightParts[index]) ? 1 : -1;
     if (leftNumber !== rightNumber) return leftNumber ? -1 : 1;
     return leftParts[index] > rightParts[index] ? 1 : -1;
