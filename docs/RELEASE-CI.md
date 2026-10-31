@@ -101,7 +101,7 @@ Or run **Actions → Release → Run workflow** and enter `1.2.0`.
 ## Covered release paths
 
 - Fugs MultiTrack Audio EX: tag workflow added in the plugin repository.
-- Fugs Chat Bubbles: local Windows release watcher dispatches the directory event after publishing.
+- Fugs Chat Bubbles: the local Windows release watcher updates `plugins.json` and the README table directly after publishing.
 - Fugs Master Volume, Fugs Only OGG MV, Fugs OGG Opus Loop Tags, and Fugs YEP/Galv SpriteOffset Fix: reusable workflow callers in their plugin repositories.
 
 For Chat Bubbles local release setup, see that repository's README.
