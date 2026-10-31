@@ -1,0 +1,46 @@
+name: Publish plugin directory update
+
+on:
+  repository_dispatch:
+    types:
+      - plugin-release
+
+permissions:
+  contents: write
+
+jobs:
+  update-directory:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout directory
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Apply release metadata and publish
+        env:
+          EVENT_PATH: ${{ github.event_path }}
+        run: |
+          set -euo pipefail
+          git config user.name "fugs-plugin-directory[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            node scripts/update-plugin-directory.mjs "$EVENT_PATH"
+            if git diff --quiet; then
+              echo "Directory already has this release."
+              exit 0
+            fi
+            git add plugins.json README.md
+            git commit -m "chore(directory): publish plugin release"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep "$attempt"
+          done
+
+          echo "::error::Could not publish the plugin directory after five attempts."
+          exit 1
