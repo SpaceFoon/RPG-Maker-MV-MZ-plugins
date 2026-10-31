@@ -32,14 +32,24 @@ on:
         required: false
         type: string
         default: ""
-      site_repo:
-        description: Catalog site repository (owner/name)
+      directory_repo:
+        description: Shared plugin directory repository (owner/name)
         required: false
         type: string
-        default: SpaceFoon/fugs-plugins
+        default: SpaceFoon/RPG-Maker-MV-MZ-plugins
+      category:
+        description: Catalog category for a newly registered plugin
+        required: false
+        type: string
+        default: Other
+      compatibility:
+        description: Explicitly reviewed engine compatibility for this release
+        required: false
+        type: string
+        default: ""
     secrets:
       FUGS_SITE_SYNC_TOKEN:
-        description: PAT with contents+PR write on the site repo
+        description: Token with Contents write access on the shared plugin directory repo
         required: true
 
 permissions:
@@ -47,7 +57,7 @@ permissions:
 
 jobs:
   release:
-    name: Zip, release, sync catalog
+    name: Zip, release, update shared directory
     runs-on: ubuntu-latest
     steps:
       - name: Checkout plugin repo
@@ -134,124 +144,70 @@ jobs:
 
             Download the zip for a ready-to-install pack (plugin files + INSTALL.txt).
 
-            Catalog slug: `${{ inputs.plugin_slug }}`
+            Directory slug: `${{ inputs.plugin_slug }}`
           files: ${{ steps.stage.outputs.zip_path }}
           fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Sync catalog site PR
+      - name: Notify shared plugin directory
         env:
           GH_TOKEN: ${{ secrets.FUGS_SITE_SYNC_TOKEN }}
-          SITE_REPO: ${{ inputs.site_repo }}
+          DIRECTORY_REPO: ${{ inputs.directory_repo }}
           PLUGIN_SLUG: ${{ inputs.plugin_slug }}
-          VERSION: ${{ inputs.version }}
-          ZIP_NAME: ${{ steps.stage.outputs.zip_name }}
+          PLUGIN_NAME: ${{ inputs.plugin_name }}
           SHORT_NAME: ${{ inputs.short_name }}
+          VERSION: ${{ inputs.version }}
           TAG_NAME: ${{ inputs.tag_name }}
+          FILES: ${{ inputs.files }}
+          CATEGORY: ${{ inputs.category }}
+          COMPATIBILITY: ${{ inputs.compatibility }}
+          ZIP_NAME: ${{ steps.stage.outputs.zip_name }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
           export RELEASE_ZIP_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG_NAME}/${ZIP_NAME}"
-          export UPDATED_AT="$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"
-          BRANCH="plugin-release/${PLUGIN_SLUG}-${TAG_NAME}"
-          WORK="/tmp/fugs-plugins-sync"
-          rm -rf "$WORK"
-          git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${SITE_REPO}.git" "$WORK"
-          cd "$WORK"
-          git config user.name "fugs-plugin-release[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$BRANCH"
+          export EVENT_PATH="/tmp/plugin-directory-release-event.json"
 
           node <<'NODE'
           const fs = require("fs");
-          const slug = process.env.PLUGIN_SLUG;
-          const version = process.env.VERSION;
-          const updatedAt = process.env.UPDATED_AT;
-          const releaseZipUrl = process.env.RELEASE_ZIP_URL;
-          const short = process.env.SHORT_NAME;
+          const files = process.env.FILES.split(/\r?\n/)
+            .map((file) => file.trim())
+            .filter(Boolean);
+          const javascriptFiles = files.filter((file) => /\.js$/i.test(file));
+          if (javascriptFiles.length === 0) throw new Error("Release contains no JavaScript plugin files");
+          const source = javascriptFiles.map((file) => fs.readFileSync(file, "utf8")).join("\n");
+          const description = source.match(/^\s*\*\s*@plugindesc\s+(.+)$/m)?.[1]?.trim() ?? "";
+          const license = source.match(/^\s*\*\s*@license\s+(.+)$/m)?.[1]?.trim() ?? "";
+          const targets = new Set([...source.matchAll(/^\s*\*\s*@target\s+(MZ|MV)\b/gm)].map((match) => match[1]));
+          const inferredCompatibility = targets.has("MZ") && targets.has("MV")
+            ? "MZ/MV"
+            : targets.has("MZ")
+              ? "MZ"
+              : targets.has("MV")
+                ? "MV"
+                : "Unknown";
 
-          function replaceObjectField(block, field, value) {
-            const re = new RegExp(field + ":\\s*\"[^\"]*\"");
-            if (!re.test(block)) {
-              throw new Error(field + " field missing in plugin entry");
-            }
-            return block.replace(re, field + ': "' + value + '"');
-          }
-
-          function findObjectBounds(src, needle) {
-            const idx = src.indexOf(needle);
-            if (idx === -1) return null;
-            const brace = src.lastIndexOf("{", idx);
-            let depth = 0;
-            for (let i = brace; i < src.length; i++) {
-              if (src[i] === "{") depth++;
-              else if (src[i] === "}") {
-                depth--;
-                if (depth === 0) return { start: brace, end: i + 1 };
-              }
-            }
-            return null;
-          }
-
-          function patchPluginsTs(src) {
-            const bounds = findObjectBounds(src, 'slug: "' + slug + '"');
-            if (!bounds) throw new Error("slug not found in plugins.ts: " + slug);
-            let block = src.slice(bounds.start, bounds.end);
-            block = replaceObjectField(block, "version", version);
-            block = replaceObjectField(block, "updatedAt", updatedAt);
-            if (/releaseZipUrl:\s*"/.test(block)) {
-              block = replaceObjectField(block, "releaseZipUrl", releaseZipUrl);
-            } else {
-              const inserted = block.replace(
-                /(downloadUrl:\s*(?:\n\s*)?(?:"[^"]*"|`[^`]*`),)/,
-                '$1\n    releaseZipUrl: "' + releaseZipUrl + '",'
-              );
-              if (inserted === block) throw new Error("failed to insert releaseZipUrl");
-              block = inserted;
-            }
-            return src.slice(0, bounds.start) + block + src.slice(bounds.end);
-          }
-
-          function patchSeed(src) {
-            const bounds = findObjectBounds(src, short);
-            if (!bounds) return src;
-            let block = src.slice(bounds.start, bounds.end);
-            if (/version:\s*"/.test(block)) {
-              block = replaceObjectField(block, "version", version);
-            }
-            return src.slice(0, bounds.start) + block + src.slice(bounds.end);
-          }
-
-          const pluginsPath = "artifacts/rpg-plugins/src/data/plugins.ts";
-          const seedPath = "scripts/src/seed-plugins.ts";
-          fs.writeFileSync(pluginsPath, patchPluginsTs(fs.readFileSync(pluginsPath, "utf8")));
-          if (fs.existsSync(seedPath)) {
-            fs.writeFileSync(seedPath, patchSeed(fs.readFileSync(seedPath, "utf8")));
-          }
-          console.log("Patched catalog for " + slug + " -> " + version);
-          console.log("releaseZipUrl=" + releaseZipUrl);
+          const event = {
+            event_type: "plugin-release",
+            client_payload: {
+              slug: process.env.PLUGIN_SLUG,
+              name: process.env.PLUGIN_NAME,
+              shortName: process.env.SHORT_NAME,
+              version: process.env.VERSION,
+              tagName: process.env.TAG_NAME,
+              repository: process.env.GITHUB_REPOSITORY,
+              releaseZipUrl: process.env.RELEASE_ZIP_URL,
+              files,
+              category: process.env.CATEGORY,
+              compatibility: process.env.COMPATIBILITY,
+              compatibilityConfirmed: Boolean(process.env.COMPATIBILITY),
+              inferredCompatibility,
+              description: description.replace(/^\[v[^\]]+\]\s*/, ""),
+              license,
+            },
+          };
+          fs.writeFileSync(process.env.EVENT_PATH, JSON.stringify(event), "utf8");
           NODE
 
-          git add artifacts/rpg-plugins/src/data/plugins.ts scripts/src/seed-plugins.ts || true
-          if git diff --staged --quiet; then
-            echo "No catalog changes needed."
-            exit 0
-          fi
-          git commit -m "chore(catalog): sync ${PLUGIN_SLUG} ${TAG_NAME}"
-          git push -u origin "$BRANCH" --force
-          EXISTING="$(gh pr list --repo "$SITE_REPO" --head "$BRANCH" --json number --jq '.[0].number // empty')"
-          if [ -n "$EXISTING" ]; then
-            echo "PR already open: #${EXISTING}"
-          else
-            gh pr create --repo "$SITE_REPO" \
-              --title "chore(catalog): ${PLUGIN_SLUG} ${TAG_NAME}" \
-              --body "$(printf '%s\n' \
-                '## Summary' \
-                "- Sync catalog metadata for \`${PLUGIN_SLUG}\` to **${TAG_NAME}**" \
-                '- Set `releaseZipUrl` to the new GitHub Release zip' \
-                '' \
-                "Zip: ${RELEASE_ZIP_URL}" \
-                '' \
-                'Automated by plugin release CI.')"
-          fi
+          gh api "repos/$DIRECTORY_REPO/dispatches" --input "$EVENT_PATH"
