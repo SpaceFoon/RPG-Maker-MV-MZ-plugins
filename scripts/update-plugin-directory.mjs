@@ -13,7 +13,7 @@ function requiredString(name, value) {
 }
 
 function compatibility(value) {
-  return ["MZ", "MV", "MZ/MV", "Unknown"].includes(value) ? value : "";
+  return ["MZ", "MV", "MZ/MV"].includes(value) ? value : "";
 }
 
 function safeFileName(value) {
