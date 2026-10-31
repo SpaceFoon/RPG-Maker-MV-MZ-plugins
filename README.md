@@ -16,45 +16,18 @@ This repository serves as the central hub for:
 
 ## 🎮 Available Plugins
 
-### Audio Plugins
+The live catalog is [`plugins.json`](plugins.json), shared with the Fugs Plugins website and LostAges game sync. Release automation refreshes this table from that file.
 
-#### [FugsOpusMVMZ](https://github.com/SpaceFoon/FugsOpusMVMZ) ⭐
-Use OGG OPUS files in RPG Maker MV/MZ with looping support!
-- **Compatibility**: RPG Maker MV & MZ
-- **Status**: Active
-- **Stars**: 1
-
-#### [FugsOnlyOggMV](https://github.com/SpaceFoon/FugsOnlyOggMV) ⭐
-RPG Maker MV exports m4a files for mobile and web deployments. This plugin makes all audio exports OGG, a way better format.
-- **Compatibility**: RPG Maker MV
-- **Status**: Active
-- **Stars**: 1
-
-#### [FugMasterVolume](https://github.com/SpaceFoon/FugMasterVolume)
-Master volume controls for developers and users in RMMV.
-- **Compatibility**: RPG Maker MV
-- **Status**: Active
-
-#### [FugsMultiTrackAudioEX](https://github.com/SpaceFoon/FugsMultiTrackAudioEX) ⭐
-Unlimited audio tracks and advanced audio management for RMMV.
-- **Compatibility**: RPG Maker MV
-- **Status**: Active
-- **Stars**: 1
-
-### Visual & UI Plugins
-
-#### [FugsChatBubbles](https://github.com/SpaceFoon/FugsChatBubbles)
-Customizable animated chat bubbles that stack for RMMV.
-- **Compatibility**: RPG Maker MV
-- **Status**: Active
-
-### Compatibility Fixes
-
-#### [FugsYEP-GalvSpriteOffsetFix](https://github.com/SpaceFoon/FugsYEP-GalvSpriteOffsetFix) ⭐
-Fixes SpriteOffsetX error when using Yanfly's Sprite Offset plugin and Galv's Cam Control.
-- **Compatibility**: RPG Maker MV
-- **Status**: Active
-- **Stars**: 1
+<!-- plugin-directory:start -->
+| Plugin | Version | RPG Maker | Maturity |
+|--------|---------|-----------|----------|
+| [Fugs Chat Bubbles](https://github.com/SpaceFoon/FugsChatBubbles) | 1.0.2 | MV | Not prod ready |
+| [Fugs Master Volume](https://github.com/SpaceFoon/FugMasterVolume) | 1.0.0 | MZ/MV | Prod ready |
+| [Fugs MultiTrack Audio EX](https://github.com/SpaceFoon/FugsMultiTrackAudioEX) | 2.3.0 | MZ/MV | Not prod ready |
+| [Fugs OGG Opus Loop Tags](https://github.com/SpaceFoon/FugsOpusMVMZ) | 1.0.0 | MZ/MV | Prod ready |
+| [Fugs Only OGG MV](https://github.com/SpaceFoon/FugsOnlyOggMV) | 1.0.0 | MV | Prod ready |
+| [Fugs YEP/Galv SpriteOffset Fix](https://github.com/SpaceFoon/FugsYEP-GalvSpriteOffsetFix) | 1.0.0 | MV | Prod ready |
+<!-- plugin-directory:end -->
 
 ## 🚀 Features
 
@@ -70,7 +43,8 @@ Fixes SpriteOffsetX error when using Yanfly's Sprite Offset plugin and Galv's Ca
 ├── .github/              # GitHub configuration and workflows
 │   ├── workflows/        # CI/CD workflows
 │   └── ISSUE_TEMPLATE/   # Issue templates
-├── plugins/              # Individual plugin directories (to be added)
+├── plugins.json          # Machine-readable shared plugin catalog
+├── plugins/              # Individual plugin directories
 └── docs/                 # Documentation (to be added)
 ```
 
@@ -111,7 +85,7 @@ All plugins in this repository are automatically validated through our CI/CD pip
 
 Reusable release workflow: [`.github/workflows/release-plugin.yml`](.github/workflows/release-plugin.yml)
 
-Each plugin repo tags `v*` (or runs **Release** manually). That builds a zip with `INSTALL.txt`, publishes a GitHub Release, and opens a PR on [fugs-plugins](https://github.com/SpaceFoon/fugs-plugins) to bump catalog `version` / `updatedAt` / `releaseZipUrl`.
+Each plugin release publishes a zip with `INSTALL.txt` and sends a release event to this repository. The directory workflow updates `plugins.json` on the default branch and refreshes the table above; the website reads that JSON live.
 
 Full setup (secret `FUGS_SITE_SYNC_TOKEN`, caller template): **[docs/RELEASE-CI.md](docs/RELEASE-CI.md)**.
 
