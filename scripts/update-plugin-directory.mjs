@@ -13,7 +13,7 @@ function requiredString(name, value) {
 }
 
 function parseVersion(value) {
-  const match = String(value).match(/^(\d+)\\.(\d+)\\.(\d+)(?:-([0-9A-Za-z.-]+))?$/);
+  const match = String(value).match(/^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/);
   if (!match) return null;
   return {
     parts: [Number(match[1]), Number(match[2]), Number(match[3])],
