@@ -265,10 +265,10 @@
       "slug": "fugs-chat-bubbles",
       "name": "Fugs Chat Bubbles",
       "shortName": "FugsChatBubbles",
-      "description": "Customizable animated speech bubbles that follow events and stack — Pixi-only parallel chat, themes, gradients, and FF7-style look for RPG Maker MV.",
-      "version": "1.0.2",
+      "description": "Animated map speech bubbles for RPG Maker MV 1.6.1+ and MZ. Convert the next Show Text into a nonblocking bubble with supported text codes, themes, wrapping, and character tracking.",
+      "version": "1.1.0",
       "category": "Visual & UI",
-      "compatibility": "MV",
+      "compatibility": "MZ/MV",
       "tags": [
         "ui",
         "chat",
@@ -277,37 +277,38 @@
         "dialogue"
       ],
       "repositoryUrl": "https://github.com/SpaceFoon/FugsChatBubbles",
-      "downloadUrl": "https://raw.githubusercontent.com/SpaceFoon/FugsChatBubbles/v1.0.2/FugsChatBubbles.js",
+      "downloadUrl": "https://raw.githubusercontent.com/SpaceFoon/FugsChatBubbles/v1.1.0/FugsChatBubbles.js",
       "documentationUrl": "https://github.com/SpaceFoon/FugsChatBubbles#readme",
       "license": "GPL-3.0",
-      "updatedAt": "2026-10-31T18:08:30.065Z",
+      "updatedAt": "2026-10-31T18:50:43.164Z",
       "isNew": false,
       "isFeatured": false,
       "features": [
-        "Parallel chat bubbles using Pixi only",
-        "Bubble stacking for multiple messages",
-        "Bounce-in and fade-out animations",
-        "Built-in themes plus custom gradient text and backgrounds",
-        "Bubbles can follow events, the player, or followers",
-        "Works with MBS Maps zoom (and similar camera plugins)"
+        "Convert the next Show Text into a nonblocking bubble in MV or MZ",
+        "Engine variable/name/currency codes, icons, colors, and supported inline font changes",
+        "Centered multiline text, wrapping, stacking, and bounce/fade animations",
+        "Map bubbles follow events, the player, or followers",
+        "Unsupported message features fall back to normal dialogue",
+        "Preset themes and custom backgrounds; legacy direct commands remain available"
       ],
       "installation": [
-        "Download FugsChatBubbles.js (or the release zip when available).",
-        "Place it in your project's js/plugins folder.",
-        "Enable FugsChatBubbles in Plugin Manager and pick a theme.",
-        "Use ShowChatBubble [event][duration][message] from events."
+        "Download the release ZIP and copy FugsChatBubbles.js into your game's js/plugins folder.",
+        "Enable FugsChatBubbles in Plugin Manager. Requires MV 1.6.1+ with updated project runtime/core files, or MZ.",
+        "MV: add ChatBubble next event:current duration:5, followed by Show Text.",
+        "MZ: select Next Show Text as Bubble, followed by Show Text.",
+        "Use the normal Show Text editor for dialogue and supported text codes. See the README for fallbacks and compatibility limits."
       ],
       "repository": "SpaceFoon/FugsChatBubbles",
       "maturity": "not-prod-ready",
       "files": [
         {
           "name": "FugsChatBubbles.js",
-          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsChatBubbles/v1.0.2/FugsChatBubbles.js",
-          "sha256": "70745bfbbbfb73c16776f916372047cc1ec075104b5e9b00ec9b43b6b6c56747"
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsChatBubbles/v1.1.0/FugsChatBubbles.js",
+          "sha256": "9ac63516f516b1b9a95b2b6fad1d470fd61a636bbd05247e6bed7526e56f01aa"
         }
       ],
-      "releaseTag": "v1.0.2",
-      "releaseZipUrl": "https://github.com/SpaceFoon/FugsChatBubbles/releases/download/v1.0.2/FugsChatBubbles-v1.0.2.zip"
+      "releaseTag": "v1.1.0",
+      "releaseZipUrl": "https://github.com/SpaceFoon/FugsChatBubbles/releases/download/v1.1.0/FugsChatBubbles-v1.1.0.zip"
     }
   ]
 }

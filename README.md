@@ -125,5 +125,5 @@ The website integration that reads this manifest in the browser is pending separ
 | [Fugs Only OGG MV](https://github.com/SpaceFoon/FugsOnlyOggMV) | 1.0.0 | MV | prod-ready |
 | [Fugs OGG Opus Loop Tags](https://github.com/SpaceFoon/FugsOpusMVMZ) | 1.0.0 | MZ/MV | prod-ready |
 | [Fugs YEP/Galv SpriteOffset Fix](https://github.com/SpaceFoon/FugsYEP-GalvSpriteOffsetFix) | 1.0.0 | MV | prod-ready |
-| [Fugs Chat Bubbles](https://github.com/SpaceFoon/FugsChatBubbles) | 1.0.2 | MV | not-prod-ready |
+| [Fugs Chat Bubbles](https://github.com/SpaceFoon/FugsChatBubbles) | 1.1.0 | MZ/MV | not-prod-ready |
 <!-- plugin-directory:end -->
