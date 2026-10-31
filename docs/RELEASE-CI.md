@@ -1,31 +1,28 @@
 # Plugin release CI
 
-Reusable workflow that every Fugs plugin repo calls on a `v*` tag.
+Reusable release workflow for the Fugs plugin repositories. A tagged release updates the shared machine-readable directory in this repository.
 
 ## What it does
 
-1. Packages listed plugin files into `{shortName}-v{version}.zip`
-2. Writes plain-text `INSTALL.txt` (install steps + README + LICENSE)
-3. Publishes a GitHub Release with that zip
-4. Opens a PR on `SpaceFoon/fugs-plugins` that bumps `version`, `updatedAt`, and `releaseZipUrl` for the matching catalog `slug`
+1. Packages the configured files into `{shortName}-v{version}.zip`.
+2. Writes plain-text `INSTALL.txt` with install steps, README, and LICENSE.
+3. Publishes a GitHub Release on the plugin repository.
+4. Sends the release details to this repository's directory workflow.
+5. The directory workflow adds or updates the entry in `plugins.json`, records release-pinned JavaScript URLs and SHA-256 hashes, and refreshes the README table.
+
+The Fugs Plugins website fetches `plugins.json` directly, and LostAges `plugin-sync.sh pull` reads the same data.
 
 ## Secret
 
-Create a fine-grained PAT (or classic PAT) with:
-
-- **Contents: Read and write** and **Pull requests: Read and write** on `SpaceFoon/fugs-plugins`
-
-Add it to **each plugin repository** as Actions secret:
+The calling plugin repository must have an Actions secret named:
 
 `FUGS_SITE_SYNC_TOKEN`
 
-(Reusable workflows receive secrets from the *caller* repo, not from this umbrella.)
-
-Org-level Actions secrets work too if every plugin repo can inherit them.
+Give the token **Contents: Read and write** access to `SpaceFoon/RPG-Maker-MV-MZ-plugins`. The directory workflow uses its own `GITHUB_TOKEN` to commit the update. The old private-site catalog PR is no longer part of this release flow.
 
 ## Caller workflow template
 
-Add `.github/workflows/release.yml` in a plugin repo:
+Add `.github/workflows/release.yml` to a plugin repository:
 
 ```yaml
 name: Release
@@ -78,6 +75,8 @@ jobs:
       short_name: FugsExample
       version: ${{ needs.prepare.outputs.version }}
       tag_name: ${{ needs.prepare.outputs.tag_name }}
+      category: Audio
+      compatibility: MZ/MV
       files: |
         FugsExample.js
         LICENSE
@@ -88,7 +87,7 @@ jobs:
       FUGS_SITE_SYNC_TOKEN: ${{ secrets.FUGS_SITE_SYNC_TOKEN }}
 ```
 
-Multi-file packs (MultiTrack) list every satellite + docs + optional bundle under `files:`.
+The `category` and `compatibility` inputs are optional. Set compatibility explicitly when a release changes supported RPG Maker versions. Existing catalog maturity, description, features, and other reviewed fields are preserved. A new slug is inserted with maturity `unreviewed`, so a release never implies production readiness.
 
 ## How to cut a release
 
@@ -99,12 +98,10 @@ git push origin v1.2.0
 
 Or run **Actions → Release → Run workflow** and enter `1.2.0`.
 
-## Catalog contract
+## Covered release paths
 
-The site entry in `artifacts/rpg-plugins/src/data/plugins.ts` must already exist with the given `slug`. The sync job updates:
+- Fugs MultiTrack Audio EX: tag workflow added in the plugin repository.
+- Fugs Chat Bubbles: local Windows release watcher dispatches the directory event after publishing.
+- Fugs Master Volume, Fugs Only OGG MV, Fugs OGG Opus Loop Tags, and Fugs YEP/Galv SpriteOffset Fix: reusable workflow callers in their plugin repositories.
 
-- `version`
-- `updatedAt` (UTC ISO)
-- `releaseZipUrl` (inserts if missing)
-
-It will **fail** if the slug is missing — add new plugins to the catalog first (as with FugsChatBubbles).
+For Chat Bubbles local release setup, see that repository's README.
