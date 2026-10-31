@@ -73,9 +73,7 @@ function inferDescription(sourceText) {
 }
 
 function inferLicense(sourceText) {
-  const tagged = sourceText.match(/^\s*\*\s*@license\s+(.+)$/m)?.[1]?.trim();
-  if (tagged) return tagged;
-  return "See repository";
+  return sourceText.match(/^\s*\*\s*@license\s+(.+)$/m)?.[1]?.trim() ?? "";
 }
 
 function replaceGeneratedTable(readme, rows) {
@@ -168,7 +166,7 @@ const plugin = previous ?? {
   repositoryUrl,
   downloadUrl: primary.url,
   documentationUrl: repositoryUrl + "#readme",
-  license: payload.license || inferLicense(firstSource),
+  license: payload.license || inferLicense(firstSource) || "See repository",
   updatedAt,
   maturity,
   isNew: false,
@@ -181,6 +179,13 @@ const plugin = previous ?? {
   ],
 };
 
+const releaseDescription =
+  (typeof payload.description === "string" && payload.description.trim()) ||
+  inferDescription(firstSource);
+const releaseLicense =
+  (typeof payload.license === "string" && payload.license.trim()) ||
+  inferLicense(firstSource);
+
 plugin.name = name;
 plugin.shortName = shortName;
 plugin.repository = repository;
@@ -192,6 +197,8 @@ plugin.releaseZipUrl = releaseZipUrl;
 plugin.downloadUrl = primary.url;
 plugin.updatedAt = updatedAt;
 plugin.files = releaseFiles.map(({ name: fileName, url, sha256 }) => ({ name: fileName, url, sha256 }));
+if (releaseDescription) plugin.description = releaseDescription;
+if (releaseLicense) plugin.license = releaseLicense;
 if (previous && inferred && payload.compatibilityConfirmed === true) {
   plugin.compatibility = inferred;
 }
