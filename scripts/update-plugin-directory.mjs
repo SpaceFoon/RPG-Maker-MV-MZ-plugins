@@ -12,6 +12,40 @@ function requiredString(name, value) {
   return value.trim();
 }
 
+function parseVersion(value) {
+  const match = String(value).match(/^(\\d+)\\.(\\d+)\\.(\\d+)(?:-([0-9A-Za-z.-]+))?$/);
+  if (!match) return null;
+  return {
+    parts: [Number(match[1]), Number(match[2]), Number(match[3])],
+    prerelease: match[4] ?? "",
+  };
+}
+
+function compareVersions(left, right) {
+  const a = parseVersion(left);
+  const b = parseVersion(right);
+  if (!a || !b) return null;
+  for (let index = 0; index < 3; index += 1) {
+    if (a.parts[index] !== b.parts[index]) return a.parts[index] > b.parts[index] ? 1 : -1;
+  }
+  if (a.prerelease === b.prerelease) return 0;
+  if (!a.prerelease) return 1;
+  if (!b.prerelease) return -1;
+  const leftParts = a.prerelease.split(".");
+  const rightParts = b.prerelease.split(".");
+  for (let index = 0; index < Math.max(leftParts.length, rightParts.length); index += 1) {
+    if (leftParts[index] === undefined) return -1;
+    if (rightParts[index] === undefined) return 1;
+    if (leftParts[index] === rightParts[index]) continue;
+    const leftNumber = /^\\d+$/.test(leftParts[index]);
+    const rightNumber = /^\\d+$/.test(rightParts[index]);
+    if (leftNumber && rightNumber) return Number(leftParts[index]) > Number(rightParts[index]) ? 1 : -1;
+    if (leftNumber !== rightNumber) return leftNumber ? -1 : 1;
+    return leftParts[index] > rightParts[index] ? 1 : -1;
+  }
+  return 0;
+}
+
 function compatibility(value) {
   return ["MZ", "MV", "MZ/MV"].includes(value) ? value : "";
 }
@@ -103,6 +137,17 @@ if (oldCatalog.schemaVersion !== 1 || !Array.isArray(oldCatalog.plugins)) {
 }
 const index = oldCatalog.plugins.findIndex((plugin) => plugin.slug === slug);
 const previous = index >= 0 ? oldCatalog.plugins[index] : null;
+if (previous) {
+  const versionComparison = compareVersions(version, previous.version);
+  if (versionComparison === null) throw new Error("Could not compare release version with directory version");
+  if (versionComparison < 0) {
+    throw new Error("Refusing to replace directory v" + previous.version + " with older release " + tagName);
+  }
+  if (versionComparison === 0 && previous.releaseTag === tagName) {
+    console.log("Directory already contains " + slug + " " + tagName);
+    process.exit(0);
+  }
+}
 const firstSource = releaseFiles.find((file) => file.sourceText)?.sourceText ?? "";
 const inferred = compatibility(payload.compatibility);
 const maturityValues = ["prod-ready", "not-prod-ready", "unreviewed"];
