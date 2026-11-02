@@ -64,35 +64,43 @@
       "files": [
         {
           "name": "FugsMultiTrackAudioEX.js",
-          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsMultiTrackAudioEX.js"
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsMultiTrackAudioEX.js",
+          "sha256": "a0c26d891f9d116909a66627b37f03b04e12e3703f010e22f4bc313e408b60ac"
         },
         {
           "name": "FugsAudio0Docs.js",
-          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio0Docs.js"
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio0Docs.js",
+          "sha256": "680307b363fbf0db9ddf4c338c0fc7cede738ddf8a725fc6743286f75ac4a457"
         },
         {
           "name": "FugsAudio2Effects.js",
-          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio2Effects.js"
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio2Effects.js",
+          "sha256": "c3dc46ebdf8d14977150f11f3a9c0803e8fbffb9b638d65e54797e4e458c4c90"
         },
         {
           "name": "FugsAudio3Spatial.js",
-          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio3Spatial.js"
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio3Spatial.js",
+          "sha256": "b8c75cd1cb6582cbc92cfcfc7e8b401d5e0f50119dc54f2d5e08e1484b5304ea"
         },
         {
           "name": "FugsAudio4Dynamics.js",
-          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio4Dynamics.js"
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio4Dynamics.js",
+          "sha256": "41ed2c6cdf2cf2d6da9c5d1ae738ea5634a8205776a41601bbf7dab7af549ad1"
         },
         {
           "name": "FugsAudio5Switch.js",
-          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio5Switch.js"
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio5Switch.js",
+          "sha256": "32c813009514b0dd9bf8d3edad437534bc37238dca12f8d38e56dbd5340b4251"
         },
         {
           "name": "FugsAudio6Aliases.js",
-          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio6Aliases.js"
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio6Aliases.js",
+          "sha256": "ef361f140cca4ee04a33c0888a3d7cd6f4dd2ea937f8d50be39c7b684b6fee51"
         },
         {
           "name": "FugsAudio7Compat.js",
-          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio7Compat.js"
+          "url": "https://raw.githubusercontent.com/SpaceFoon/FugsMultiTrackAudioEX/v2.3.0/FugsAudio7Compat.js",
+          "sha256": "e6ada63061588b37b676e924661468f475f6634bd074a448093e00977381710d"
         }
       ]
     },
