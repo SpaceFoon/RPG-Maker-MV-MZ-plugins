@@ -9,7 +9,7 @@ on:
 jobs:
   check-plugins:
     name: Monitor Plugin Repositories
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     
     steps:
     - name: Checkout code

@@ -58,7 +58,7 @@ permissions:
 jobs:
   release:
     name: Zip, release, update shared directory
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Checkout plugin repo
         uses: actions/checkout@v4

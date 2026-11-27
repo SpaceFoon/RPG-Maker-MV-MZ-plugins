@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update-directory:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     steps:
       - name: Checkout directory
         uses: actions/checkout@v4
