@@ -10,7 +10,7 @@ on:
 jobs:
   validate:
     name: Validate Repository
-    runs-on: [self-hosted, Linux]
+    runs-on: ${{ github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted","Linux"]') }}
     
     steps:
     - name: Checkout code
@@ -54,7 +54,7 @@ jobs:
 
   lint:
     name: Lint Check
-    runs-on: [self-hosted, Linux]
+    runs-on: ${{ github.event.pull_request.head.repo.fork && 'ubuntu-latest' || fromJSON('["self-hosted","Linux"]') }}
     
     steps:
     - name: Checkout code
