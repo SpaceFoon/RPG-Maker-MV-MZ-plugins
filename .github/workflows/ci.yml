@@ -55,7 +55,6 @@ jobs:
   lint:
     name: Lint Check
     runs-on: [self-hosted, Linux]
-    if: ${{ hashFiles('**/*.js') != '' }}
     
     steps:
     - name: Checkout code
