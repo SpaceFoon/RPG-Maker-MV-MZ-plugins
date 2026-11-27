@@ -10,7 +10,7 @@ on:
 jobs:
   validate:
     name: Validate Repository
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux]
     
     steps:
     - name: Checkout code
@@ -54,8 +54,7 @@ jobs:
 
   lint:
     name: Lint Check
-    runs-on: ubuntu-latest
-    if: ${{ hashFiles('**/*.js') != '' }}
+    runs-on: [self-hosted, Linux]
     
     steps:
     - name: Checkout code
